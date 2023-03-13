@@ -14,7 +14,6 @@ const Login = ({ navigation }) => {
     dispatch(login(email, password));
   };
   useEffect(() => {
-    console.log(error);
     if (error) {
       alert(error);
       dispatch({ type: "clearError" });
