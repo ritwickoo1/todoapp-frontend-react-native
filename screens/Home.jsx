@@ -7,35 +7,39 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import React from "react";
+import React,{useEffect} from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
 import Task from "../components/Task";
 import Icon from "react-native-vector-icons/Entypo";
 import { Button, Dialog } from "react-native-paper";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addTask, loadUser } from "../redux/action";
+import { useSelector } from "react-redux";
 const Home = ({ navigation }) => {
-  const tasks = [
-    {
-      _id: "1",
-      title: "Task 1",
-      description: "Task 1 description",
-      completed: false,
-    },
-    {
-      _id: "2",
-      title: "Task 2",
-      description: "Task 2 description",
-      completed: false,
-    },
-  ];
+  const {user} = useSelector(state=>state.auth)
+  const dispatch = useDispatch();
+  const {loading,message,error} = useSelector(state=>state.message)
   const [openDialog, setOpenDialog] = useState(false);
   const hideDialog = () => setOpenDialog(!openDialog);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const addTaskHandler = () => {
-    console.log(title, description);
+  const addTaskHandler =  async() => {
+    await dispatch(addTask(title, description));
+    dispatch(loadUser())
   };
+  useEffect(() => {
+    if (error) {
+      alert(error);
+      dispatch({ type: "clearError" });
+    }
+    if(message){
+      alert(message);
+      dispatch({type:"clearMessage"})
+    }
+  }, [error, dispatch, alert, message]);
+
   return (
     <>
       <View
@@ -48,7 +52,7 @@ const Home = ({ navigation }) => {
         <ScrollView>
           <SafeAreaView>
             <Text style={styles.heading}>All Task</Text>
-            {tasks.map((item) => (
+            {user && user.tasks.map((item) => (
               <Task
                 key={item._id}
                 title={item.title}
@@ -83,8 +87,10 @@ const Home = ({ navigation }) => {
             <TouchableOpacity onPress={hideDialog}>
               <Text>CANCEL</Text>
             </TouchableOpacity>
-            <Button onPress={addTaskHandler}>
-              <Text>ADD</Text>
+            <Button onPress={addTaskHandler}
+              disabled={!title || !description || loading}
+            >
+              ADD
             </Button>
           </View>
         </Dialog.Content>

@@ -1,17 +1,25 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, TextInput } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
-import { login } from "../redux/action"
+import { login } from "../redux/action";
+import { useSelector } from "react-redux";
 const Login = ({ navigation }) => {
+  const { error } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const loginHandler = () => {
     dispatch(login(email, password));
-    console.log("login");
   };
+  useEffect(() => {
+    console.log(error);
+    if (error) {
+      alert(error);
+      dispatch({ type: "clearError" });
+    }
+  }, [error, dispatch, alert]);
   return (
     <View
       style={{
@@ -55,6 +63,9 @@ const Login = ({ navigation }) => {
         >
           Sign Up
         </Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("forgetpassword")}>
+        <Text>Forgot password</Text>
       </TouchableOpacity>
     </View>
   );

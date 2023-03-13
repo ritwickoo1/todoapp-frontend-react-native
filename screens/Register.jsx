@@ -2,18 +2,32 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, TextInput } from "react-native";
 import { Avatar, Button } from "react-native-paper";
+import { useDispatch } from "react-redux";
+import { register } from "../redux/action";
+import mime from "mime";
 
 const Register = ({navigation,route}) => {
     const [name, setName] = useState("");
     const [avatar, setAvatar] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const dispatch = useDispatch();
     const handleImage = () => {
-        navigation.navigate("camera");
+        navigation.navigate("camera",{
+            updateProfile: false
+        });
     };
     const registerHandler = () => {
-        console.log("register");
-        console.log(route)
+        const myForm = new FormData();
+        myForm.append("name", name);
+        myForm.append("email", email);
+        myForm.append("password", password);
+        myForm.append("avatar", {
+            uri: avatar,
+            type: mime.getType(avatar),
+            name: avatar.split("/").pop()
+        })
+       dispatch(register(myForm));
     };
     useEffect(() => {
         if (route.params) {

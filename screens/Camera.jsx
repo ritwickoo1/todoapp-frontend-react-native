@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button, StyleSheet, TouchableOpacity } from "react-native";
 import  Icon  from "react-native-vector-icons/MaterialIcons";
 import * as ImagePicker from "expo-image-picker";
-const CameraComponent = ({navigation}) => {
+const CameraComponent = ({navigation, route}) => {
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [camera, setCamera] = useState(null);
@@ -17,17 +17,21 @@ const CameraComponent = ({navigation}) => {
     }
     const data = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1,1],
       quality: 1,
     });
     if (!data.canceled) {
-      return navigation.navigate("register", {image: data.uri});
+      if(route.params.updateProfile)
+      return navigation.navigate("profile", {image: data.uri});
+      else return navigation.navigate("register", {image: data.uri})
     }
     console.log(data);
   };
   const takePicture = async () => {
     const data = await camera.takePictureAsync(null);
-    return navigation.navigate("register", {image: data.uri});
+    if(route.params.updateProfile)
+      return navigation.navigate("profile", {image: data.uri});
+      else return navigation.navigate("register", {image: data.uri})
     
   };
   if (!permission) {
