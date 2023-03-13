@@ -11,7 +11,6 @@ import ChangePassword from "./screens/ChangePassword";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { loadUser } from "./redux/action";
-import { Text } from "react-native";
 import Loader from "./components/Loader";
 import Verify from "./screens/Verify";
 import ForgetPassword from "./screens/ForgetPassword";

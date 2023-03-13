@@ -25,7 +25,6 @@ const CameraComponent = ({navigation, route}) => {
       return navigation.navigate("profile", {image: data.uri});
       else return navigation.navigate("register", {image: data.uri})
     }
-    console.log(data);
   };
   const takePicture = async () => {
     const data = await camera.takePictureAsync(null);
